@@ -19,6 +19,7 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react'
+import { api, fetchApi } from '@/lib/api'
 
 interface AnalysisRecord {
   id: string
@@ -51,10 +52,7 @@ const AnalysisHistory: React.FC<AnalysisHistoryProps> = ({ isDarkMode = false })
   const fetchHistory = async (page: number = 1) => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/v1/analysis-history?page=${page}&limit=10`)
-      if (!response.ok) {
-        throw new Error('Failed to fetch history records')
-      }
+      const response = await fetchApi(api.analysisHistory(page, 10))
       const data = await response.json()
       if (data.status === 'success') {
         setRecords(data.data.records || [])
@@ -75,7 +73,7 @@ const AnalysisHistory: React.FC<AnalysisHistoryProps> = ({ isDarkMode = false })
     if (!confirm('Are you sure you want to delete this record?')) return
     
     try {
-      const response = await fetch(`/api/v1/analysis/${id}`, {
+      const response = await fetchApi(api.deleteAnalysis(id), {
         method: 'DELETE',
       })
       if (response.ok) {

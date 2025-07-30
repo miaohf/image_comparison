@@ -13,6 +13,7 @@ import {
   Clock,
   Activity
 } from 'lucide-react'
+import { api, fetchApi } from '@/lib/api'
 
 interface AnalysisResult {
   similarity_score: number
@@ -77,22 +78,10 @@ const ImageComparison: React.FC<ImageComparisonProps> = ({ isDarkMode = false })
       formData.append('enable_alert', 'true')
       formData.append('save_results', 'true')
 
-      const response = await fetch('/api/v1/compare-images', {
+      const response = await fetchApi(api.compareImages(), {
         method: 'POST',
         body: formData,
       })
-      
-      if (!response.ok) {
-        let errorMessage = `HTTP ${response.status}: ${response.statusText}`
-        try {
-          const errorText = await response.text()
-          const errorData = JSON.parse(errorText)
-          errorMessage = errorData.detail || errorMessage
-        } catch (e) {
-          console.log('Unable to parse error response JSON')
-        }
-        throw new Error(`Analysis request failed: ${errorMessage}`)
-      }
 
       const responseText = await response.text()
       let data

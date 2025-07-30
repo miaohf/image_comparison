@@ -19,6 +19,7 @@ import {
   Cpu,
   HardDrive
 } from 'lucide-react'
+import { api, fetchApi } from '@/lib/api'
 
 interface SystemHealth {
   status: string
@@ -45,10 +46,7 @@ const SystemStatus: React.FC<SystemStatusProps> = ({ isDarkMode = false }) => {
   const checkHealth = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/v1/health')
-      if (!response.ok) {
-        throw new Error('Health check request failed')
-      }
+      const response = await fetchApi(api.health())
       const data: SystemHealth = await response.json()
       setHealth(data)
       setLastCheck(new Date())
